@@ -34,7 +34,7 @@ public class ProjectSecurityConfig {
         http
         	.securityContext((contextConfig) -> contextConfig.requireExplicitSave(false))
         	.sessionManagement((sessionConfig) -> sessionConfig
-        											.sessionCreationPolicy(SessionCreationPolicy.ALWAYS))
+        											.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             
         	.cors(withDefaults())
             
@@ -45,7 +45,8 @@ public class ProjectSecurityConfig {
             .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class)
             
             .authorizeHttpRequests((requests) -> 
-                requests.requestMatchers("/api/v1/**", "/student").authenticated()
+                requests.requestMatchers("/api/v1/**").hasRole("ADMIN")
+                		.requestMatchers("/student").authenticated()
                         .requestMatchers("/home", "/about", "/contact", "/register", "/error").permitAll());
         
         http.formLogin((flc) -> flc.defaultSuccessUrl("/home"));

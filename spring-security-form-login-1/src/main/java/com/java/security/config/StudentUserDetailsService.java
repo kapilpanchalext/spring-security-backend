@@ -30,15 +30,21 @@ public class StudentUserDetailsService implements UserDetailsService {
 					.orElseThrow(() -> 
 						new UsernameNotFoundException("Username not found for: " + username));
 			
-			List<GrantedAuthority> authorities = student
-				.getAuthorities()
-				.stream()
-				.map(authority -> new SimpleGrantedAuthority(authority.getName()))
-				.collect(Collectors.toList());
+//			List<GrantedAuthority> authorities = student
+//				.getAuthorities()
+//				.stream()
+//				.map(authority -> new SimpleGrantedAuthority(authority.getName()))
+//				.collect(Collectors.toList());
+			
+			List<GrantedAuthority> roles = student
+					.getRoles()
+					.stream()
+					.map(authority -> new SimpleGrantedAuthority(authority.getName()))
+					.collect(Collectors.toList());
 			
 			return new User(student.getEmail(), 
 					student.getPwd(), 
-					authorities);
+					roles);
 			
 		} catch (Exception e) {
 			e.printStackTrace();
