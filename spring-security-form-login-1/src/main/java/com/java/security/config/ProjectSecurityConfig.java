@@ -39,7 +39,7 @@ public class ProjectSecurityConfig {
         	.cors(withDefaults())
             
             .csrf((csrfConfig) -> csrfConfig
-            		.ignoringRequestMatchers("/register")
+            		.ignoringRequestMatchers("/register","/login")
             		.csrfTokenRequestHandler(csrfTokenRequestAttributeHandler)
             		.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
             .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class)
