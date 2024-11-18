@@ -8,13 +8,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(path = "/api/v1")
-public class HelloWorld {
+@RequestMapping(path = "/")
+public class HomeController {
 	
 	@Value("${app.api.key}")
 	private String myApiKey;
 
-	@GetMapping(path = "/helloworld")
+	@GetMapping(path = "/home")
 	public ResponseEntity<String> getHelloWorld() {
 		
 		return ResponseEntity

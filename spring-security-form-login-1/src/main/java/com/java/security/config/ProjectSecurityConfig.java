@@ -39,7 +39,7 @@ public class ProjectSecurityConfig {
         	.cors(withDefaults())
             
             .csrf((csrfConfig) -> csrfConfig
-            		.ignoringRequestMatchers("/register","/login")
+            		.ignoringRequestMatchers("/home" ,"/register", "/login")
             		.csrfTokenRequestHandler(csrfTokenRequestAttributeHandler)
             		.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
             .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class)
@@ -48,7 +48,7 @@ public class ProjectSecurityConfig {
                 requests.requestMatchers("/api/v1/**", "/student").authenticated()
                         .requestMatchers("/home", "/about", "/contact", "/register", "/error").permitAll());
         
-        http.formLogin(withDefaults());
+        http.formLogin((flc) -> flc.defaultSuccessUrl("/home"));
         http.httpBasic(withDefaults());
         return http.build();
     }
