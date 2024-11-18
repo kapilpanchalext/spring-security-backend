@@ -21,6 +21,8 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import com.java.security.filter.CsrfCookieFilter;
+import com.java.security.filter.JwtTokenGeneratorFilter;
+import com.java.security.filter.JwtTokenValidatorFilter;
 
 @Configuration
 @Profile("!prod")
@@ -32,7 +34,6 @@ public class ProjectSecurityConfig {
 				new CsrfTokenRequestAttributeHandler();
 		
         http
-        	.securityContext((contextConfig) -> contextConfig.requireExplicitSave(false))
         	.sessionManagement((sessionConfig) -> sessionConfig
         											.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             
@@ -43,6 +44,8 @@ public class ProjectSecurityConfig {
             		.csrfTokenRequestHandler(csrfTokenRequestAttributeHandler)
             		.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
             .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class)
+            .addFilterBefore(new JwtTokenValidatorFilter(), BasicAuthenticationFilter.class)
+            .addFilterAfter(new JwtTokenGeneratorFilter(), BasicAuthenticationFilter.class)
             
             .authorizeHttpRequests((requests) -> 
                 requests.requestMatchers("/api/v1/**").hasRole("ADMIN")
@@ -61,6 +64,7 @@ public class ProjectSecurityConfig {
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
         configuration.setAllowCredentials(true);
+        configuration.setExposedHeaders(Arrays.asList("Authorization"));
         configuration.setMaxAge(3600L);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
