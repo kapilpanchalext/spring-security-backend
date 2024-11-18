@@ -81,6 +81,13 @@ CREATE TABLE `authorities` (
   CONSTRAINT `authorities_ibfk_1` FOREIGN KEY (`student_id`) REFERENCES `student` (`student_id`)
 );
 
+CREATE TABLE `spring_security_1`.`roles` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `student_id` INT NOT NULL,
+  `name` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE);
+
 ALTER TABLE `spring_security_1`.`authorities` 
 DROP FOREIGN KEY `authorities_ibfk_1`;
 ALTER TABLE `spring_security_1`.`authorities` 
@@ -130,6 +137,17 @@ SELECT `student`.`student_id`,
     `student`.`email`,
     `student`.`mobile_number`,
     `student`.`pwd`,
-    `student`.`role`,
     `student`.`create_dt`
 FROM `spring_security_1`.`student`;
+
+SELECT `roles`.`id`,
+    `roles`.`student_id`,
+    `roles`.`name`
+FROM `spring_security_1`.`roles`;
+
+INSERT INTO `roles` (`student_id`, `name`)
+ VALUES (1, 'ROLE_ADMIN');
+
+INSERT INTO `roles` (`student_id`, `name`)
+ VALUES (1, 'ROLE_USER');
+
