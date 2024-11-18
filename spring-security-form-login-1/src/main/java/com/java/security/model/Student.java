@@ -16,7 +16,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -40,7 +39,7 @@ public class Student implements Serializable {
 	
 	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	private String pwd;
-	private String role;
+//	private String role;
 
 	@Column(name = "create_dt")
 	@JsonIgnore
@@ -48,4 +47,7 @@ public class Student implements Serializable {
 
 	@OneToMany(mappedBy = "student", fetch = FetchType.EAGER)
 	private Set<Authority> authorities;
+	
+	@OneToMany(mappedBy = "student", fetch = FetchType.EAGER)
+	private Set<Role> roles;
 }
