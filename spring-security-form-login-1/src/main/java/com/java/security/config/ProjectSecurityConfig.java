@@ -43,8 +43,9 @@ public class ProjectSecurityConfig {
             		.ignoringRequestMatchers("/home" ,"/register", "/login")
             		.csrfTokenRequestHandler(csrfTokenRequestAttributeHandler)
             		.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
-            .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class)
+            
             .addFilterBefore(new JwtTokenValidatorFilter(), BasicAuthenticationFilter.class)
+            .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class)
             .addFilterAfter(new JwtTokenGeneratorFilter(), BasicAuthenticationFilter.class)
             
             .authorizeHttpRequests((requests) -> 
@@ -71,7 +72,7 @@ public class ProjectSecurityConfig {
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
-	
+
 	@Bean
 	PasswordEncoder passwordEncoder() {
 		return PasswordEncoderFactories.createDelegatingPasswordEncoder();
