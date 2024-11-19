@@ -51,7 +51,7 @@ public class ProjectSecurityConfig {
             .authorizeHttpRequests((requests) -> 
                 requests.requestMatchers("/api/v1/**").hasRole("ADMIN")
                 		.requestMatchers("/student").authenticated()
-                        .requestMatchers("/home", "/about", "/contact", "/register", "/error").permitAll());
+                        .requestMatchers("/home", "/about", "/contact", "/register", "/error", "/login").permitAll());
         
         http.formLogin((flc) -> flc.defaultSuccessUrl("/home"));
         http.httpBasic(withDefaults());
