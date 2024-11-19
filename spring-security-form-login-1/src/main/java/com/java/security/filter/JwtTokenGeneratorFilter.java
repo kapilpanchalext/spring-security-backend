@@ -35,7 +35,7 @@ public class JwtTokenGeneratorFilter extends OncePerRequestFilter{
 				String secret = env.getProperty("JWT_SECRET", 
 						"$2a$12$JbnxIJbhzcPMK3452345324234xXCOL49BekIcqu41ZAMfDL0pQ/J58zhX5WhgZlIC");
 				SecretKey secretKey = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
-				Jwts
+				String jwt = Jwts
 					.builder()
 					.issuer("application1")
 					.subject("JWTToken")
@@ -45,16 +45,17 @@ public class JwtTokenGeneratorFilter extends OncePerRequestFilter{
 											.stream()
 											.map(GrantedAuthority::getAuthority)
 											.collect(Collectors.joining(",")))
-					.issuedAt(new Date());
+					.issuedAt(new Date())
+					.expiration(new Date(new Date().getTime() + 30000000))
+					.signWith(secretKey).compact();
+				response.setHeader("Authorization", jwt);
 			}
-			
 		}
-		
 		filterChain.doFilter(request, response);
 	}
 
 	@Override
 	protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-		return !request.getServletPath().equals("/login");
+		return !request.getServletPath().equals("/api/v1/helloworld");
 	}
 }
