@@ -10,8 +10,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
@@ -21,8 +19,6 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import com.java.security.filter.CsrfCookieFilter;
-import com.java.security.filter.JwtTokenGeneratorFilter;
-import com.java.security.filter.JwtTokenValidatorFilter;
 
 @Configuration
 @Profile("!prod")
@@ -44,9 +40,7 @@ public class ProjectSecurityConfig {
             		.csrfTokenRequestHandler(csrfTokenRequestAttributeHandler)
             		.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
             
-            .addFilterBefore(new JwtTokenValidatorFilter(), BasicAuthenticationFilter.class)
             .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class)
-            .addFilterAfter(new JwtTokenGeneratorFilter(), BasicAuthenticationFilter.class)
             
             .authorizeHttpRequests((requests) -> 
                 requests.requestMatchers("/api/v1/**").hasRole("ADMIN")
@@ -72,9 +66,4 @@ public class ProjectSecurityConfig {
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
-
-	@Bean
-	PasswordEncoder passwordEncoder() {
-		return PasswordEncoderFactories.createDelegatingPasswordEncoder();
-	}
 }
