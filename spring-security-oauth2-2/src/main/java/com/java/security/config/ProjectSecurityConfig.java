@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
@@ -23,32 +24,39 @@ import com.java.security.filter.CsrfCookieFilter;
 @Configuration
 @Profile("!prod")
 public class ProjectSecurityConfig {
-	
+
 	@Bean
     SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
+		JwtAuthenticationConverter jwtAuthenticationConverter = 
+				new JwtAuthenticationConverter();
+
+		jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(new KeycloakRoleConverter());
+
 		CsrfTokenRequestAttributeHandler csrfTokenRequestAttributeHandler = 
 				new CsrfTokenRequestAttributeHandler();
-		
+
         http
         	.sessionManagement((sessionConfig) -> sessionConfig
         											.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            
+
         	.cors(withDefaults())
-            
+
             .csrf((csrfConfig) -> csrfConfig
             		.ignoringRequestMatchers("/home", "/register", "/login")
             		.csrfTokenRequestHandler(csrfTokenRequestAttributeHandler)
             		.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
-            
+
             .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class)
-            
+
             .authorizeHttpRequests((requests) -> 
                 requests.requestMatchers("/api/v1/**").hasRole("ADMIN")
                 		.requestMatchers("/student").authenticated()
                         .requestMatchers("/home", "/about", "/contact", "/register", "/error", "/login").permitAll());
-        
-        http.formLogin((flc) -> flc.defaultSuccessUrl("/home"));
-        http.httpBasic(withDefaults());
+
+        http.oauth2ResourceServer((rsc) -> 
+        	rsc.jwt((jwtConfigurer) -> 
+        		jwtConfigurer.jwtAuthenticationConverter(jwtAuthenticationConverter)));
+
         return http.build();
     }
 

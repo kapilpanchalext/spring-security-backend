@@ -224,3 +224,35 @@ FROM `keycloak`.`realm`;
 SELECT `user_role_mapping`.`ROLE_ID`,
     `user_role_mapping`.`USER_ID`
 FROM `keycloak`.`user_role_mapping`;
+
+SELECT `client`.`ID`,
+    `client`.`ENABLED`,
+    `client`.`FULL_SCOPE_ALLOWED`,
+    `client`.`CLIENT_ID`,
+    `client`.`NOT_BEFORE`,
+    `client`.`PUBLIC_CLIENT`,
+    `client`.`SECRET`,
+    `client`.`BASE_URL`,
+    `client`.`BEARER_ONLY`,
+    `client`.`MANAGEMENT_URL`,
+    `client`.`SURROGATE_AUTH_REQUIRED`,
+    `client`.`REALM_ID`,
+    `client`.`PROTOCOL`,
+    `client`.`NODE_REREG_TIMEOUT`,
+    `client`.`FRONTCHANNEL_LOGOUT`,
+    `client`.`CONSENT_REQUIRED`,
+    `client`.`NAME`,
+    `client`.`SERVICE_ACCOUNTS_ENABLED`,
+    `client`.`CLIENT_AUTHENTICATOR_TYPE`,
+    `client`.`ROOT_URL`,
+    `client`.`DESCRIPTION`,
+    `client`.`REGISTRATION_TOKEN`,
+    `client`.`STANDARD_FLOW_ENABLED`,
+    `client`.`IMPLICIT_FLOW_ENABLED`,
+    `client`.`DIRECT_ACCESS_GRANTS_ENABLED`,
+    `client`.`ALWAYS_DISPLAY_IN_CONSOLE`
+FROM `keycloak`.`client`;
+
+
+
+
