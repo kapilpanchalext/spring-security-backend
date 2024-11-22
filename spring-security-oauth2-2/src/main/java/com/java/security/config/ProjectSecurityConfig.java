@@ -42,7 +42,7 @@ public class ProjectSecurityConfig {
         	.cors(withDefaults())
 
             .csrf((csrfConfig) -> csrfConfig
-            		.ignoringRequestMatchers("/home", "/register", "/login")
+            		.ignoringRequestMatchers("/home**", "/register", "/login")
             		.csrfTokenRequestHandler(csrfTokenRequestAttributeHandler)
             		.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
 
@@ -51,7 +51,7 @@ public class ProjectSecurityConfig {
             .authorizeHttpRequests((requests) -> 
                 requests.requestMatchers("/api/v1/**").hasRole("ADMIN")
                 		.requestMatchers("/student").authenticated()
-                        .requestMatchers("/home", "/about", "/contact", "/register", "/error", "/login").permitAll());
+                        .requestMatchers("/home**", "/about", "/contact", "/register", "/error", "/login").permitAll());
 
         http.oauth2ResourceServer((rsc) -> 
         	rsc.jwt((jwtConfigurer) -> 

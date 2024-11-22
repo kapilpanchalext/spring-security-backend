@@ -19,6 +19,6 @@ public class HomeController {
 		
 		return ResponseEntity
 					.status(HttpStatus.OK)
-					.body(myApiKey);
+					.body("Home: " + myApiKey);
 	}
 }
