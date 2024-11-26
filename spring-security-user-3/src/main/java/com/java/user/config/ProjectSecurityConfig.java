@@ -8,9 +8,13 @@ import java.util.Collections;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.security.authentication.password.CompromisedPasswordChecker;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.password.HaveIBeenPwnedRestApiPasswordChecker;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
@@ -37,16 +41,16 @@ public class ProjectSecurityConfig {
         	.cors(withDefaults())
 
             .csrf((csrfConfig) -> csrfConfig
-            		.ignoringRequestMatchers("/home**", "/register", "/login")
+            		.ignoringRequestMatchers("/home**", "/login", "/register-student", "/register-role")
             		.csrfTokenRequestHandler(csrfTokenRequestAttributeHandler)
             		.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
 
             .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class)
 
             .authorizeHttpRequests((requests) -> 
-                requests.requestMatchers("/api/v1/**").hasRole("ADMIN")
+                requests.requestMatchers("/api/v1/**").permitAll()
                 		.requestMatchers("/student").authenticated()
-                        .requestMatchers("/home**", "/about", "/contact", "/register", "/error", "/login").permitAll());
+                        .requestMatchers("/home**", "/about", "/contact", "/register-student", "/register-role", "/error", "/login").permitAll());
 
         return http.build();
     }
@@ -64,5 +68,15 @@ public class ProjectSecurityConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
+    }
+    
+	@Bean
+    PasswordEncoder passwordEncoder() {
+        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+    }
+
+    @Bean
+    CompromisedPasswordChecker compromisedPasswordChecker() {
+        return new HaveIBeenPwnedRestApiPasswordChecker();
     }
 }
