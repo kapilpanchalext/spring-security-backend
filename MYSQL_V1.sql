@@ -1,3 +1,6 @@
+SELECT *
+FROM `student_database`.`roles`;
+
 SELECT `student`.`created_date`,
     `student`.`last_modified_date`,
     `student`.`student_id`,
@@ -10,7 +13,6 @@ SELECT `student`.`created_date`,
     `student`.`password`
 FROM `student_database`.`student`;
 
-SELECT `roles`.`id`,
-    `roles`.`student_id`,
-    `roles`.`name`
-FROM `student_database`.`roles`;
+SELECT `student_roles`.`student_id`,
+    `student_roles`.`id`
+FROM `student_database`.`student_roles`;
