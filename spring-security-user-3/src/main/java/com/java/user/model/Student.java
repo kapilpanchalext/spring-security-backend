@@ -7,13 +7,16 @@ import java.util.Set;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -39,10 +42,11 @@ public class Student implements Serializable {
 	@Column(unique = true, nullable = false)
 	private String email;
 
-	@Column(name = "mobile_number", unique = true, nullable = false)
+	@Column(name = "mobile_number", nullable = false)
 	private String mobileNumber;
 
 	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+	@JsonIgnore
 	private String password;
 
 	@Column(name = "created_date", unique = true, nullable = false, updatable = false)
@@ -65,6 +69,11 @@ public class Student implements Serializable {
 	@Builder.Default
 	private String lastModifiedBy = "admin";
 
-	@OneToMany(mappedBy = "student", fetch = FetchType.EAGER)
-	private Set<Role> roles;
+    @ManyToMany(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
+    @JoinTable(
+        name = "student_roles",
+        joinColumns = @JoinColumn(name = "student_id"),
+        inverseJoinColumns = @JoinColumn(name = "id")
+    )
+    private Set<Role> roles;
 }

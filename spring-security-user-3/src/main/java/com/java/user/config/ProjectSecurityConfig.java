@@ -41,16 +41,16 @@ public class ProjectSecurityConfig {
         	.cors(withDefaults())
 
             .csrf((csrfConfig) -> csrfConfig
-            		.ignoringRequestMatchers("/home**", "/login", "/register-student", "/register-role")
-            		.csrfTokenRequestHandler(csrfTokenRequestAttributeHandler)
-            		.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
+        		.ignoringRequestMatchers("/home**", "/login", "/register-student", "/register-role", "/assign-roles", "/get-student-by-email")
+        		.csrfTokenRequestHandler(csrfTokenRequestAttributeHandler)
+        		.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
 
             .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class)
 
             .authorizeHttpRequests((requests) -> 
                 requests.requestMatchers("/api/v1/**").permitAll()
-                		.requestMatchers("/student").authenticated()
-                        .requestMatchers("/home**", "/about", "/contact", "/register-student", "/register-role", "/error", "/login").permitAll());
+            		.requestMatchers("/student").authenticated()
+                    .requestMatchers("/home**", "/about", "/contact", "/register-student", "/register-role", "/error", "/login", "/assign-roles", "/get-student-by-email").permitAll());
 
         return http.build();
     }

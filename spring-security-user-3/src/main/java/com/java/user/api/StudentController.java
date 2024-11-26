@@ -1,6 +1,9 @@
 package com.java.user.api;
 
+import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -71,21 +74,47 @@ public class StudentController {
 		}
 	}
 	
-	@PostMapping(path = "assign-roles")
+	@PostMapping(path = "/assign-roles")
 	public ResponseEntity<String> assignRoleToStudent(@RequestParam String role, 
-														@RequestParam long studentId){
+														@RequestParam String email){
 		
-		Student student = repo.getById(studentId);
-		Role studentRole = Role.builder().name(role).build();
-		
-//		student.setRoles(new HashSet<Role>(studentRole));
-		
-		System.err.println(student);
-		System.err.println(studentRole);
+		 // Fetch the student by ID
+	    Student student = repo.findByEmail(email)
+	                          .orElseThrow(() -> new IllegalArgumentException("Student not found"));
+
+	    // Create a new role or find an existing one
+	    Role studentRole = rolesRepo
+	    					.getByName(role)
+	    					.orElse(Role.builder().name(role).build());
+	    Set<Student> roleSet = new HashSet<>();
+	    roleSet.add(student);
+	    // Set the relationship between student and role
+	    studentRole.setStudent(roleSet);
+
+	    // Add the role to the student's roles set
+	    if (student.getRoles() == null) {
+	        student.setRoles(new HashSet<>());
+	    }
+	    student.getRoles().add(studentRole);
+
+	    // Save the role and student (cascading will handle saving both if configured)
+	    rolesRepo.save(studentRole);
+	    
+	    System.err.println(repo.findByEmail(email));
 		
 		return ResponseEntity
 				.status(HttpStatus.OK)
 				.body("Role Assigned To Student");
+	}
+	
+	@GetMapping(path = "/get-student-by-email")
+	public ResponseEntity<List<Student>> getStudentByEmail(){
+		
+		List<Student> studentsList = repo.findAll();
+		
+		return ResponseEntity
+				.status(HttpStatus.OK)
+				.body(studentsList);
 	}
 	
 	@GetMapping(path = "/student")
