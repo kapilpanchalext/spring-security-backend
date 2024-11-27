@@ -32,6 +32,7 @@ public class StudentController {
 
 	@PostMapping(path = "/register-student")
 	public ResponseEntity<String> registerStudent(@RequestBody Student student){
+		System.err.println("Student: " + student);
 		try {
 			String hashPwd = passwordEncoder.encode(student.getPassword());
 			student.setPassword(hashPwd);
@@ -58,7 +59,7 @@ public class StudentController {
 		try {
 			Role savedRole = rolesRepo.save(role);
 			
-			if(savedRole.getId() > 0) {
+			if(savedRole.getRole_id() > 0) {
 				return ResponseEntity
 						.status(HttpStatus.CREATED)
 						.body("New Role Created Successfully!");
@@ -78,7 +79,7 @@ public class StudentController {
 	public ResponseEntity<String> assignRoleToStudent(@RequestParam String role, 
 														@RequestParam String email){
 		
-		 // Fetch the student by ID
+		// Fetch the student by ID
 	    Student student = repo.findByEmail(email)
 	                          .orElseThrow(() -> new IllegalArgumentException("Student not found"));
 
@@ -118,7 +119,7 @@ public class StudentController {
 	}
 	
 	@GetMapping(path = "/student")
-	public ResponseEntity<String> getStudentDetails(Authentication authentication) {
+	public ResponseEntity<String> getStudentDetails(Authentication authentication){
 		Optional<Student> optionalStudent = repo.findByEmail(authentication.getName());
 		return ResponseEntity.status(HttpStatus.OK).body(optionalStudent.get().toString());
 	}

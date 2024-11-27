@@ -30,6 +30,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class Student implements Serializable {
+	private static final long serialVersionUID = 7366456153337391645L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,6 +38,7 @@ public class Student implements Serializable {
 
 	@Column(name = "student_id")
 	private int student_id;
+	
 	private String name;
 	
 	@Column(unique = true, nullable = false)
@@ -46,7 +48,6 @@ public class Student implements Serializable {
 	private String mobileNumber;
 
 	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-	@JsonIgnore
 	private String password;
 
 	@Column(name = "created_date", unique = true, nullable = false, updatable = false)
@@ -73,7 +74,7 @@ public class Student implements Serializable {
     @JoinTable(
         name = "student_roles",
         joinColumns = @JoinColumn(name = "student_id"),
-        inverseJoinColumns = @JoinColumn(name = "id")
+        inverseJoinColumns = @JoinColumn(name = "role_id")
     )
     private Set<Role> roles;
 }

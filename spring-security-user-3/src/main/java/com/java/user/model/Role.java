@@ -1,7 +1,6 @@
 package com.java.user.model;
 
 import java.io.Serializable;
-import java.util.HashSet;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -27,10 +26,12 @@ import lombok.Setter;
 @NoArgsConstructor
 @Builder
 public class Role implements Serializable {
+	private static final long serialVersionUID = 1203993936723280450L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private long id;
+	@Column(name = "role_id", nullable = false, unique = true)
+	private long role_id;
 	
 	@Column(unique = true, nullable = false)
 	private String name;
@@ -41,6 +42,6 @@ public class Role implements Serializable {
 
 	@Override
 	public String toString() {
-		return "Role [id=" + id + ", name=" + name + "]";
+		return "Role [role_id=" + role_id + ", name=" + name + "]";
 	}
 }
