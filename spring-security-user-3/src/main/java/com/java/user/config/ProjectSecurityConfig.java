@@ -8,9 +8,12 @@ import java.util.Collections;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.password.CompromisedPasswordChecker;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -50,7 +53,9 @@ public class ProjectSecurityConfig {
             .authorizeHttpRequests((requests) -> 
                 requests.requestMatchers("/api/v1/**").permitAll()
             		.requestMatchers("/student").authenticated()
-                    .requestMatchers("/home**", "/about", "/contact", "/register-student", "/register-role", "/error", "/login", "/assign-roles", "/get-student-by-email").permitAll());
+                    .requestMatchers("/home**", "/about", "/contact", "/register-student", "/register-role", "/error", "/login", "/assign-roles", "/get-student-by-email").permitAll())
+            .formLogin(withDefaults())
+            .httpBasic(withDefaults());
 
         return http.build();
     }
@@ -79,4 +84,14 @@ public class ProjectSecurityConfig {
     CompromisedPasswordChecker compromisedPasswordChecker() {
         return new HaveIBeenPwnedRestApiPasswordChecker();
     }
+    
+    @Bean
+	AuthenticationManager authenticationManager(UserDetailsService userDetailsService, PasswordEncoder passwordEncoder) {
+		
+    	UsernamePasswordAuthenticationProvider authenticationProvider = 
+				new UsernamePasswordAuthenticationProvider(userDetailsService, passwordEncoder);
+		ProviderManager providerManager = new ProviderManager(authenticationProvider);
+		providerManager.setEraseCredentialsAfterAuthentication(false);
+		return providerManager;
+	}
 }
