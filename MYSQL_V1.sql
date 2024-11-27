@@ -14,5 +14,5 @@ SELECT `student`.`created_date`,
 FROM `student_database`.`student`;
 
 SELECT `student_roles`.`student_id`,
-    `student_roles`.`id`
+    `student_roles`.`role_id`
 FROM `student_database`.`student_roles`;
