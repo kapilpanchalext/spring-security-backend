@@ -19,6 +19,7 @@ import com.java.user.model.Role;
 import com.java.user.model.Student;
 import com.java.user.repository.RolesRepository;
 import com.java.user.repository.StudentRepository;
+import com.java.user.service.KafkaMessagingService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -29,6 +30,7 @@ public class StudentController {
 	private final StudentRepository repo;
 	private final RolesRepository rolesRepo;
 	private final PasswordEncoder passwordEncoder;
+	private final KafkaMessagingService service;
 
 	@PostMapping(path = "/register-student")
 	public ResponseEntity<String> registerStudent(@RequestBody Student student){
@@ -122,6 +124,7 @@ public class StudentController {
 	public ResponseEntity<String> getStudentDetails(Authentication authentication){
 		Optional<Student> optionalStudent = repo.findByEmail(authentication.getName());
 		System.err.println("Authentication: " + authentication);
+		service.publishMessage("Student: " + authentication.getName()+ " loggedin.", 0);
 		return ResponseEntity.status(HttpStatus.OK).body(optionalStudent.get().toString());
 	}
 }
