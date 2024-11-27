@@ -121,8 +121,7 @@ public class StudentController {
 	@GetMapping(path = "/student")
 	public ResponseEntity<String> getStudentDetails(Authentication authentication){
 		Optional<Student> optionalStudent = repo.findByEmail(authentication.getName());
-		System.err.println("Authentication: " + authentication.getName());
-		System.err.println("Student Details: " + optionalStudent.get());
+		System.err.println("Authentication: " + authentication);
 		return ResponseEntity.status(HttpStatus.OK).body(optionalStudent.get().toString());
 	}
 }
