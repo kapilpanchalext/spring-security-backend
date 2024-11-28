@@ -124,7 +124,7 @@ public class StudentController {
 	public ResponseEntity<String> getStudentDetails(Authentication authentication){
 		Optional<Student> optionalStudent = repo.findByEmail(authentication.getName());
 		System.err.println("Authentication: " + authentication);
-		service.publishMessage("Student: " + authentication.getName()+ " loggedin.", 0);
+		service.publishMessage("LOGIN: " + authentication.getName(), 0);
 		return ResponseEntity.status(HttpStatus.OK).body(optionalStudent.get().toString());
 	}
 }
